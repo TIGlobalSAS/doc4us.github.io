@@ -1,0 +1,6 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\WEF\TrustedCatalogs\{db109c61-78f0-4cd0-8e69-43061e7883b8}]
+"Id"="{db109c61-78f0-4cd0-8e69-43061e7883b8}"
+"Url"="\\\\REAA-LAP\\iBPMS4USADWPManifest2"
+"Flags"=dword:00000001

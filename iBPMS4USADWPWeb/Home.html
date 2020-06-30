@@ -1,0 +1,466 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title>Word Add-In with Commands Sample</title>
+    <style>
+        .block {
+            background-color: blue;
+            width: 150px;
+            height: 70px;
+            margin: 10px;
+        }
+    </style>
+    <!--<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.js"></script>-->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" />
+    <!--<script src="Scripts/jquery-3.5.0.js" type="text/javascript"></script>-->
+    <script src="//code.jquery.com/jquery-1.10.2.js" type="text/javascript"></script>
+    <script src="Scripts/MessageBanner.js" type="text/javascript"></script>
+    <script src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js" type="text/javascript"></script>
+    <script src="//ajax.microsoft.com/ajax/4.0/1/MicrosoftAjax.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.min.css" />
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.components.min.css" />
+    <script src="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/js/fabric.min.js"></script>
+    <script src="Home.js" type="text/javascript"></script>
+    <link href="Home.css" rel="stylesheet" type="text/css" />
+    <link href="../Content/Button.css" rel="stylesheet" type="text/css" />
+    <link href="../Content/MessageBanner.css" rel="stylesheet" type="text/css" />
+    <script>
+        function singleSelectChangeText() {
+            var selObj = document.getElementById("ListaCampos");
+            var selValue = selObj.options[selObj.selectedIndex].text;
+            //insertLabel(selValue);
+            writeContent(selValue);
+        }
+        function combineText() {
+            var selObj = document.getElementById("txtreplace");
+            var selValue = selObj.value;
+            combineContent(selValue);
+        }
+
+        function insertLabel(label) {
+            var labelr = String(label);
+            Word.run(function (context) {
+                debugger;
+                // Create a proxy object for the document.
+                var thisDocument = context.document;
+
+                // Queue a command to get the current selection.
+                // Create a proxy range object for the selection.
+                var range = thisDocument.getSelection();
+                // Queue a command to replace the selected text.
+                range.insertText(labelr + '\n', Word.InsertLocation.replace);
+
+                // Synchronize the document state by executing the queued commands,
+                // and return a promise to indicate task completion.
+                return context.sync().then(function () {
+                    console.log('Added a quote from Ralph Waldo Emerson.');
+                });
+            })
+                .catch(function (error) {
+                    console.log('Error: ' + JSON.stringify(error));
+                    if (error instanceof OfficeExtension.Error) {
+                        console.log('Debug info: ' + JSON.stringify(error.debugInfo));
+                    }
+                });
+        }
+        function writeContent(label) {
+            var FileXml = "../XMLBase.xml";
+            var myOOXMLRequest = new XMLHttpRequest();
+            var myTEXT;
+            myOOXMLRequest.open('GET', FileXml, false);
+            myOOXMLRequest.send();
+            if (myOOXMLRequest.status === 200) {
+                myTEXT = myOOXMLRequest.responseText;
+                myTEXT = myTEXT.replace("TextoAReemplazar", "«" + String(label).trim() + "»");
+            }
+            Office.context.document.setSelectedDataAsync(myTEXT, { coercionType: 'ooxml' });
+        }
+
+        function getFileUrl() {
+            Word.run(function (context) {
+                var selValue = Office.context.document.url;
+                var _App = selValue.split("-");
+                var selApp = document.getElementById("App");
+                var selId = document.getElementById("Id");
+                selApp.value = _App[1].toString();
+                var _SelId = _App[2].split(".");
+                selId.value = _SelId[0].toString();
+                var thisDocument = context.document;
+                var range = thisDocument.getSelection();
+                range.insertText(selValue);
+                return context.sync().then(function () {
+                    console.log('Inserto ok');
+                });
+            });
+        }
+
+
+        function combineContent(label) {
+            var labelr = String(label);
+
+            Word.run(function (context) {
+                debugger;
+                // Create a proxy object for the document.
+                debugger;
+                var thisDocument = context.document;
+                let evenContentControls = thisDocument.contentControls.getById(112233);
+                let cssContentControls = thisDocument.contentControls;
+                cssContentControls.load();
+                evenContentControls.load("length");
+                return context.sync().then(function () {
+                    debugger;
+                    if (cssContentControls.items.length = 1) {
+                        console.log(cssContentControls.items[0].text);
+                    }
+                    for (let i = 0; i < evenContentControls.items.length; i++) {
+                        // Change a few properties and append a paragraph
+                        evenContentControls.items[i].set({
+                            color: "red",
+                            title: "Odd ContentControl #" + (i + 1),
+                            appearance: "Tags"
+                        });
+                        evenContentControls.items[i].insertParagraph("This is an odd content control", "End");
+                    }
+                    return context.sync();
+                });
+            })
+                .catch(function (error) {
+                    console.log('Error: ' + JSON.stringify(error));
+                    if (error instanceof OfficeExtension.Error) {
+                        console.log('Debug info: ' + JSON.stringify(error.debugInfo));
+                    }
+                });
+        };
+
+        function save() {
+            var newURL = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname + window.location.search
+            console.log('Url info: ' + newURL);
+        }
+
+        //function combineContent(label) {
+        //var labelr = String(label);
+        //// Adds title and colors to odd and even content controls and changes their appearance.
+        //    debugger;
+        //Word.run(function (context) {
+        //// Gets the complete sentence (as range) associated with the insertion point.
+        //let evenContentControls = context.document.contentControls.getByTag("even");
+        //let oddContentControls = context.document.contentControls.getByTag("odd");
+        //evenContentControls.load("length");
+        //oddContentControls.load("length");
+
+        //await context.sync();
+
+        //for (let i = 0; i < evenContentControls.items.length; i++) {
+        //    // Change a few properties and append a paragraph
+        //    evenContentControls.items[i].set({
+        //    color: "red",
+        //    title: "Odd ContentControl #" + (i + 1),
+        //    appearance: "Tags"
+        //    });
+        //    evenContentControls.items[i].insertParagraph("This is an odd content control", "End");
+        //    }
+        //  });
+        //}
+    </script>
+</head>
+<body onLoad="getData()">
+    <div id="content-header">
+        <img src="./Images/LogoEmpresa.jpg" alt="LogoEmpresa" width="100%" height="100%" style="vertical-align:middle; align-content:stretch">
+    </div>
+    <div id="content-main">
+        <div class="padding">
+            <img src="./Images/LogoCliente.jpg" alt="LogoCliente" width="50%" height="50%">
+            <p style="text-align: justify;">A continuación podrás crear la plantilla e insertar las etiquetas disponibles</p>
+            <div class="ms-TextField" hidden="hidden">
+                <label class="ms-Label">App</label>
+                <input id="App" class="ms-TextField-field" type="text" value="" placeholder="">
+            </div>
+            <div class="ms-TextField" hidden="hidden">
+                <label class="ms-Label">Id</label>
+                <input id="Id" class="ms-TextField-field" type="text" value="" placeholder="">
+            </div>
+            <!--<button id="go">&raquo; Run</button>-->
+            <!--<div class="block"></div>-->
+            <!--<button type="button" class="btn btn-outline-primary" id="getFileAsync">Guardar Documento</button><br/><br/>-->
+            <div class="ms-Pivot ms-Pivot--tabs">
+                <ul class="ms-Pivot-links">
+                    <li class="ms-Pivot-link is-selected" style="background-color:#1C6B86" data-content="Intro" title="Introducción" tabindex="1" id="TI1">
+                        Introducción
+                    </li>
+                    <li class="ms-Pivot-link " style="background-color:#1C6B86" data-content="Labels" title="Etiquetas" tabindex="1" id="TI2">
+                        Etiquetas
+                    </li>
+                    <li class="ms-Pivot-link " style="background-color:#1C6B86" data-content="Combine" title="Combinación" tabindex="1" id="TI3">
+                        Combinación de Etiquetas
+                    </li>
+                    <li class="ms-Pivot-link" style="background-color:#1C6B86" tabindex="1" id="TI4">
+                        <i class="ms-Pivot-ellipsis ms-Icon ms-Icon--More"></i>
+                    </li>
+                </ul>
+                <div class="ms-Pivot-content" data-content="Intro" style="text-align: justify;">
+                    Doc4Us  ofrece a sus clientes la posibilidad de crear plantillas personalizadas basadas en documentos de Microsoft Officce Word o Officce 365 y personalizarlas con la imagen y datos de sus empresa así como la capacidad de insertar metadatos personalizados de su sistema de gestión documental electrónico integrado.
+
+                    Si crea con frecuencia un determinado tipo de documento, como un informe mensual, una proyección de ventas o una presentación con un logotipo de la empresa, guárdelo como plantilla para poder usarlo en Doc4Us como punto de partida en lugar de volver a crear el archivo desde cero cada vez que lo necesite. Comience con un documento que ya haya creado, un documento que haya descargado o una plantilla nueva que haya personalizado.
+                </div>
+                <div class="ms-Pivot-content" data-content="Labels">
+                    <div class="1" tabindex="0">
+                        <label class="ms-Label ms-fontSize-xlPlus">Tipos de Etiquetas</label>
+                        <i class="ms-Dropdown-caretDown ms-Icon ms-Icon--ChevronDown"></i>
+                        <select class="form-control" id="TipoEtiqueta" onchange="getDisponibles()">
+                        </select>
+                    </div>
+                    <div class=2" tabindex="0">
+                        <label class="ms-Label">Lista de Etiquetas Disponible</label>
+                        <i class="ms-Dropdown-caretDown ms-Icon ms-Icon--ChevronDown"></i>
+                        <select class="form-control" id="ListaCampos" onchange="">
+                        </select>
+                    </div>
+                    <div class="ms-CommandButton">
+                        <button class="ms-CommandButton-button" id="insertaretiqueta" onclick="singleSelectChangeText()">
+                            <span class="ms-CommandButton-icon ms-fontColor-themePrimary"><i class="ms-Icon ms-Icon--CircleRing"></i></span>
+                            <span class="ms-CommandButton-label">Insertar Etiqueta</span>
+                        </button>
+                    </div>
+                    <div class="ms-CommandButton">
+                        <button class="ms-CommandButton-button" id="guardar">
+                            <span class="ms-CommandButton-icon ms-fontColor-themePrimary"><i class="ms-Icon ms-Icon--CircleRing"></i></span>
+                            <span class="ms-CommandButton-label">Guardar Plantilla</span>
+                        </button>
+                    </div>
+                    <div class="ms-TextField ms-TextField--placeholder" hidden="hidden">
+                        <label class="ms-Label">Escriba el texto a reemplazar</label>
+                        <input class="ms-TextField-field" type="text" value="" placeholder="" id="txtreplace">
+                    </div>
+                    <div class="ms-CommandButton" hidden="hidden">
+                        <button class="ms-CommandButton-button" id="combinarretiqueta" onclick="combineText()">
+                            <span class="ms-CommandButton-icon ms-fontColor-themePrimary"><i class="ms-Icon ms-Icon--CircleRing"></i></span>
+                            <span class="ms-CommandButton-label">Combinar Etiqueta</span>
+                        </button>
+                    </div>
+                    <br /><br />
+                </div>
+                <div class="ms-Pivot-content" data-content="Combine">
+                    This is the shared with me tab.
+                </div>
+            </div>
+            <br /><br />
+        </div>
+    </div>
+    <br/>
+    
+    <div id="supportedVersion" />
+    <!--<script>
+        var url = "https://code.jquery.com/color/jquery.color.js";
+        $.getScript(url, function () {
+            $("#go").click(function () {
+                $(".block")
+                    .animate({
+                        backgroundColor: "rgb(255, 180, 180)"
+                    }, 1000)
+                    .delay(500)
+                    .animate({
+                        backgroundColor: "olive"
+                    }, 1000)
+                    .delay(500)
+                    .animate({
+                        backgroundColor: "#00f"
+                    }, 1000);
+            });
+        });
+    </script>-->
+
+    <script type="text/javascript">
+        
+
+       
+        //function guardar() {
+        //    var _UrlFile;
+        //    Word.run(function (context) {
+        //        var thisDocument = context.document;
+        //        _UrlFile = Office.context.document.url;
+        //        context.load(thisDocument, 'saved');
+        //        return context.sync().then(function () {
+        //            if (thisDocument.saved === false) {
+        //                thisDocument.save();
+        //                //ojo
+        //                context.document.getFileAsync("compressed",
+        //                    { sliceSize: 100000 },
+        //                    function (result) {
+
+        //                        if (result.status == Office.AsyncResultStatus.Succeeded) {
+
+        //                            // Get the File object from the result.
+        //                            var myFile = result.value;
+        //                            var state = {
+        //                                file: myFile,
+        //                                counter: 0,
+        //                                sliceCount: myFile.sliceCount
+        //                            };
+        //                            getSlice(state);
+        //                        }
+        //                        else {
+
+        //                        }
+        //                    });
+
+        //                //ojo
+        //            } else {
+        //                console.log('The document has not changed since the last save.');
+        //            }
+        //        });
+        //    })
+        //        .catch(function (error) {
+        //            console.log("Error: " + JSON.stringify(error));
+        //            if (error instanceof OfficeExtension.Error) {
+        //                console.log("Debug info: " + JSON.stringify(error.debugInfo));
+        //            }
+        //        });
+
+
+
+            //function getSlice(state) {
+            //    state.file.getSliceAsync(state.counter, function (result) {
+            //        if (result.status == Office.AsyncResultStatus.Succeeded) {
+            //            sendSlice(result.value, state);
+            //        }
+            //        else {
+
+            //        }
+            //    });
+            //}
+
+            //function sendSlice(slice, state) {
+            //    var data = slice.data;
+
+            //    // If the slice contains data, create an HTTP request.
+            //    if (data) {
+
+            //        // Encode the slice data, a byte array, as a Base64 string.
+            //        // NOTE: The implementation of myEncodeBase64(input) function isn't
+            //        // included with this example. For information about Base64 encoding with
+            //        // JavaScript, see https://developer.mozilla.org/docs/Web/JavaScript/Base64_encoding_and_decoding.
+            //        var fileData = myEncodeBase64(data);
+
+            //        // Create a new HTTP request. You need to send the request
+            //        // to a webpage that can receive a post.
+            //        var request = new XMLHttpRequest();
+
+            //        // Create a handler function to update the status
+            //        // when the request has been sent.
+            //        request.onreadystatechange = function () {
+            //            if (request.readyState == 4) {
+            //                state.counter++;
+            //                if (state.counter < state.sliceCount) {
+            //                    getSlice(state);
+            //                }
+            //                else {
+            //                    closeFile(state);
+            //                }
+            //            }
+            //        }
+
+            //        request.open("POST", "[Your receiving page or service]");
+            //        request.setRequestHeader("Slice-Number", slice.index);
+
+            //        // Send the file as the body of an HTTP POST
+            //        // request to the web server.
+            //        request.send(fileData);
+            //    }
+            //}
+
+            //function closeFile(state) {
+            //    // Close the file when you're done with it.
+            //    state.file.closeAsync(function (result) {
+
+            //        // If the result returns as a success, the
+            //        // file has been successfully closed.
+            //        if (result.status == "succeeded") {
+            //            updateStatus("File closed.");
+            //        }
+            //        else {
+            //            updateStatus("File couldn't be closed.");
+            //        }
+            //    });
+            //}
+
+
+
+
+
+
+            //guarda//
+
+            //var request = new XMLHttpRequest();
+            //request.open('GET', _UrlFile, true);
+            //request.responseType = 'blob';
+            //request.onload = function () {
+            //    var reader = new FileReader();
+            //    reader.readAsDataURL(request.response);
+            //    reader.onload = function (e) {
+            //        var detalle = reader.result.replace("data:text/html; charset=utf-8;base64,", "");
+            //        //var uintArray = Base64Binary.decode(detalle);
+
+            //        var obj = JSON.stringify({
+            //            "id": 1521,
+            //            "id_TS_TipoDato": 1,
+            //            "sid_TS_TipoDato": "plantilla generica",
+            //            "codigo": "1521",
+            //            "nombre": "plantilla generica",
+            //            "detalle": "plantilla generica",
+            //            "detallePlantilla": detalle,
+            //            "estado": true,
+            //            "filtro": "",
+            //            "_ippublica": "",
+            //            "_nombremaquina": "",
+            //            "_usuario": "",
+            //            "_ipdetrasproxy": "",
+            //            "_browser": "",
+            //            "_accion": "",
+            //            "_sessionid": ""
+            //        });
+
+
+            //        var url = 'http://apicoreibpmns.doc4us.com/api/TP_DetalleTipoDato';
+            //        $.ajax({
+            //            type: 'PUT',
+            //            data: obj,
+            //            url: url,
+            //            contentType: 'json',
+            //            success: function (data) {
+            //                var _data = data;
+            //            },
+            //            error: function (data) {
+            //                var err = data.err;
+            //            },
+            //            beforeSend: function (xhr) {
+            //                xhr.setRequestHeader('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InBydWViYSIsIm5iZiI6MTU5MTk5MzY3NCwiZXhwIjoxNTkxOTkzOTc0LCJpYXQiOjE1OTE5OTM2NzR9.p9UKbzl-JvAXCVG8zGO_mWI8Pw8QZSfqO6ScrsMorts');
+            //                xhr.setRequestHeader('Content-Type', 'application/json;odata.metadata=minimal;odata.streaming=true');
+            //                xhr.setRequestHeader('accept', '*/*');
+            //            }
+            //        });
+            //    }
+            //    reader.onerror = function (error) {
+            //        console.log('Error: ', error);
+            //    };
+            //};
+            //request.send();
+
+
+
+
+
+
+        //}
+
+
+
+    </script>
+</body>
+</html>

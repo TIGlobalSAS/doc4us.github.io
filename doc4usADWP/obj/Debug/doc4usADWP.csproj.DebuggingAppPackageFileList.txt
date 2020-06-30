@@ -1,0 +1,2 @@
+bin\Debug\OfficeAppManifests\doc4usADWPManifest.xml
+C:\Doc4us\Add-ins Office\doc4usADWP\bin\Debug\doc4usADWP.debugapp

@@ -1,0 +1,7 @@
+False
+dfc4dded-b673-40f3-9288-c740c789bdfca8a4fe31-9752-4042-8518-b6d7a5ad1518
+{6e71f807-568d-41bb-b1fe-5d29bead089f}{e19d6131-758b-495a-887b-d19d3d21286d}
+{6cbef5f7-99bc-4779-9d91-b34e2f316ffb}
+1.0.0.0
+doc4usADWP
+_layouts/15/
