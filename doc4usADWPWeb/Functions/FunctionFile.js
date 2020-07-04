@@ -1,6 +1,6 @@
-﻿// La función initialize debe ejecutarse cada vez que se carga una página nueva.
+﻿// The initialize function must be run each time a new page is loaded.
 (function () {
     Office.initialize = function (reason) {
-        // Si necesita inicializar algo, puede hacerlo aquí.
+        // If you need to initialize something you can do so here.
     };
 })();

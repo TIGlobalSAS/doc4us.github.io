@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <App xmlns="http://schemas.microsoft.com/sharepoint/2012/app/manifest"
-     Name="doc4usADWP"
-     ProductID="{82acaaae-8847-42d4-a554-1e1b7115897f}"
+     Name="Doc4UsW"
+     ProductID="{d9b2fdbb-645f-4aba-9c34-1e0768d655a8}"
      Version="1.0.0.0"
      SharePointMinVersion="15.0.0.0"
 >
   <Properties>
-    <Title>doc4usADWP</Title>
+    <Title>Doc4UsW</Title>
     <StartPage>https://go.microsoft.com/fwlink/?LinkID=278993</StartPage>
   </Properties>
 

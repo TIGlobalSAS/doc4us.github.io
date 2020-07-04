@@ -1,0 +1,2 @@
+C:\Doc4us\Add-ins Office\Doc4UsW\obj\Debug\Doc4UsW.csproj.CoreCompileInputs.cache
+C:\Doc4us\Add-ins Office\Doc4UsW\obj\Debug\Doc4UsW.csprojAssemblyReference.cache

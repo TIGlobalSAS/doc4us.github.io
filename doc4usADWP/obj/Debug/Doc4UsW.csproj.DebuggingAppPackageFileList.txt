@@ -1,0 +1,2 @@
+bin\Debug\OfficeAppManifests\Doc4UsWManifest.xml
+C:\Doc4us\Add-ins Office\Doc4UsW\bin\Debug\Doc4UsW.debugapp

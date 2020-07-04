@@ -3,230 +3,75 @@
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>Doc4us Panel AddIn</title>
 
-    <!--<script src="Scripts/jquery-3.4.1.js"></script>-->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.js" type="text/javascript"></script>
 
+    <script src="Scripts/jquery-3.4.1.js" type="text/javascript"></script>
     <script src="Content/js/bootstrap.bundle.min.js"></script>
     <script src="Content/js/bootstrap.min.js"></script>
     <link href="Content/css/bootstrap.min.css" rel="stylesheet" />
-
     <script src="Scripts/MessageBanner.js" type="text/javascript"></script>
-
     <script src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js" type="text/javascript"></script>
-    <!--<script src="Scripts/Office/MicrosoftAjax.js"></script>-->
-    <script src="//ajax.microsoft.com/ajax/4.0/1/MicrosoftAjax.js" type="text/javascript"></script>
 
-    <!-- For more information on Office UI Fabric, visit https://developer.microsoft.com/fabric. -->
-    <!--<link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.1/css/fabric.min.css" />-->
-    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.min.css" />
-    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.components.min.css" />
-    <script src="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/js/fabric.min.js"></script>
-
-
-
-    <script src="https://unpkg.com/@microsoft/office-js-helpers@1.0.2/dist/office.helpers.min.js"></script>
-
+    <!-- To enable offline debugging using a local reference to Office.js, use:  -->
+    <script src="Scripts/Office/MicrosoftAjax.js" type="text/javascript"></script>
+    <!-- <script src="Scripts/Office/1/office.js" type="text/javascript"></script>  -->
 
     <script src="Home.js" type="text/javascript"></script>
     <link href="Home.css" rel="stylesheet" type="text/css" />
-
-    <link href="../Content/Button.css" rel="stylesheet" type="text/css" />
-    <link href="../Content/MessageBanner.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/Button.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/MessageBanner.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="../Content/css/font-awesome.min.css">
 
-    <script>
 
+    <!-- For Office UI Fabric Core, go to https://aka.ms/office-ui-fabric to learn more. -->
+    <!--  Esta libreria que sigue e sla que viene d efabriaca y la reemplazamos por las tres siguientes del 1.40.0- -->
+    <!--<link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.0/css/fabric.min.css">-->
+    <!-- To enable the offline use of Office UI Fabric Core, use: -->
 
-
-
-
-        function singleSelectChangeText() {
-            var selObj = document.getElementById("ListaCampos");
-            var selValue = selObj.options[selObj.selectedIndex].text;
-            //insertLabel(selValue);
-            writeContent(selValue);
-        }
-        function combineText() {
-            var selObj = document.getElementById("txtreplace");
-            var selValue = selObj.value;
-            combineContent(selValue);
-        }
-
-        function insertLabel(label) {
-            var labelr = String(label);
-            Word.run(function (context) {
-                debugger;
-                // Create a proxy object for the document.
-                var thisDocument = context.document;
-
-                // Queue a command to get the current selection.
-                // Create a proxy range object for the selection.
-                var range = thisDocument.getSelection();
-                // Queue a command to replace the selected text.
-                range.insertText(labelr + '\n', Word.InsertLocation.replace);
-
-                // Synchronize the document state by executing the queued commands,
-                // and return a promise to indicate task completion.
-                return context.sync().then(function () {
-                    console.log('Added a quote from Ralph Waldo Emerson.');
-                });
-            })
-                .catch(function (error) {
-                    console.log('Error: ' + JSON.stringify(error));
-                    if (error instanceof OfficeExtension.Error) {
-                        console.log('Debug info: ' + JSON.stringify(error.debugInfo));
-                    }
-                });
-        }
-        function writeContent(label) {
-            var FileXml = "../XMLBase.xml";
-            var myOOXMLRequest = new XMLHttpRequest();
-            var myTEXT;
-            myOOXMLRequest.open('GET', FileXml, false);
-            myOOXMLRequest.send();
-            if (myOOXMLRequest.status === 200) {
-                myTEXT = myOOXMLRequest.responseText;
-                myTEXT = myTEXT.replace("TextoAReemplazar", "«" + String(label).trim() + "»");
-            }
-            Office.context.document.setSelectedDataAsync(myTEXT, { coercionType: 'ooxml' });
-        }
-
-        function getFileUrl() {
-            Word.run(function (context) {
-                var selValue = Office.context.document.url;
-                var _App = selValue.split("-");
-                var selApp = document.getElementById("App");
-                var selId = document.getElementById("Id");
-                selApp.value = _App[1].toString();
-                var _SelId = _App[2].split(".");
-                selId.value = _SelId[0].toString();
-                var thisDocument = context.document;
-                var range = thisDocument.getSelection();
-                range.insertText(selValue);
-                return context.sync().then(function () {
-                    console.log('Inserto ok');
-                });
-            });
-        }
-
-
-        function combineContent(label) {
-            var labelr = String(label);
-
-            Word.run(function (context) {
-                debugger;
-                // Create a proxy object for the document.
-                debugger;
-                var thisDocument = context.document;
-                let evenContentControls = thisDocument.contentControls.getById(112233);
-                let cssContentControls = thisDocument.contentControls;
-                cssContentControls.load();
-                evenContentControls.load("length");
-                return context.sync().then(function () {
-                    debugger;
-                    if (cssContentControls.items.length = 1) {
-                        console.log(cssContentControls.items[0].text);
-                    }
-                    for (let i = 0; i < evenContentControls.items.length; i++) {
-                        // Change a few properties and append a paragraph
-                        evenContentControls.items[i].set({
-                            color: "red",
-                            title: "Odd ContentControl #" + (i + 1),
-                            appearance: "Tags"
-                        });
-                        evenContentControls.items[i].insertParagraph("This is an odd content control", "End");
-                    }
-                    return context.sync();
-                });
-            })
-                .catch(function (error) {
-                    console.log('Error: ' + JSON.stringify(error));
-                    if (error instanceof OfficeExtension.Error) {
-                        console.log('Debug info: ' + JSON.stringify(error.debugInfo));
-                    }
-                });
-        };
-
-        function save() {
-            var newURL = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname + window.location.search
-            console.log('Url info: ' + newURL);
-        }
-
-        //function combineContent(label) {
-        //var labelr = String(label);
-        //// Adds title and colors to odd and even content controls and changes their appearance.
-        //    debugger;
-        //Word.run(function (context) {
-        //// Gets the complete sentence (as range) associated with the insertion point.
-        //let evenContentControls = context.document.contentControls.getByTag("even");
-        //let oddContentControls = context.document.contentControls.getByTag("odd");
-        //evenContentControls.load("length");
-        //oddContentControls.load("length");
-
-        //await context.sync();
-
-        //for (let i = 0; i < evenContentControls.items.length; i++) {
-        //    // Change a few properties and append a paragraph
-        //    evenContentControls.items[i].set({
-        //    color: "red",
-        //    title: "Odd ContentControl #" + (i + 1),
-        //    appearance: "Tags"
-        //    });
-        //    evenContentControls.items[i].insertParagraph("This is an odd content control", "End");
-        //    }
-        //  });
-        //}
-
-
-
-
-
-    </script>
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.min.css" />
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.components.min.css" />
+    <script src="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/js/fabric.min.js"></script>
+    <!-- link rel="stylesheet" href="Content/fabric.min.css" -->
 </head>
-<body onLoad="getData()">
+
+<!-- Office UI Fabric JS and it's components are no longer actively supported. Please see https://aka.ms/PnP-OfficeFabricReact for recommended Patterns and Practices -->
+<!-- <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/2.1.0/fabric.components.min.css"> -->
+<!-- onLoad="getData()"-->
+
+<body class="ms-Fabric" dir="ltr">
     <div id="content-header">
         <img src="./Images/logo.png" class="imagendoc4us" alt="LogoEmpresa">
     </div>
     <div id="content-main">
+
         <div class="padding">
             <img src="./Images/LogoCliente.jpg" alt="LogoCliente" class="imagenempresa">
             <h5 class="ms-font-m" style="align-content:center;"> Componentes de creación de documentos </h5>
 
 
 
-            <button type="button" class="btn  btn-light btn-pill btn-labeled btn-warning" id="gestionaplantilla" onclick="GestionarPlantilla()">
+            <button type="button" class="btn  btn-light btn-pill btn-labeled btn-warning" id="gestionaplantilla">
                 <span class="btn-label"><i class="fa fa-paste"></i></span>Plantilla
             </button>
-            <button type="button" class="btn  btn-light btn-pill btn-labeled btn-warning" id="gestionadocumento" onclick="GestionarDocumento()">
+            <button type="button" class="btn  btn-light btn-pill btn-labeled btn-warning" id="gestionadocumento">
                 <span class="btn-label"><i class="fa fa-book"></i></span>Documento
             </button>
 
 
-            <div class="ms-TextField" hidden="hidden">
+            <div class="ms-TextField">
                 <label class="ms-Label">App</label>
                 <input id="App" class="ms-TextField-field" type="text" value="" placeholder="">
             </div>
-            <div class="ms-TextField" hidden="hidden">
-                <label class="ms-Label">Id</label>
-                <input id="Id" class="ms-TextField-field" type="text" value="" placeholder="">
+
+            <div class="ms-TextField">
+                <label class="ms-Label">Log</label>
+                <input id="log" class="ms-TextField-field" type="text" value="" placeholder="">
             </div>
-
-
-            <div class="card text-white bg-info mb-3" style="width: 18rem;visibility:hidden" id="carta">
-
-                <div class="card-header" id="notificationHeader">
-                    <img class="card-img-top" src="Images/icon-16.png" style="width:10%;height:10%;" />
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title"></h5>
-                    <p class="card-text" id="notificationBody">.</p>
-                </div>
+            <div class="ms-TextField">
+                <label class="ms-Label">IdDocumento</label>
+                <input id="IdDocumento" class="ms-TextField-field" type="text" value="" placeholder="">
             </div>
 
 
@@ -278,27 +123,28 @@
                                     <div data-content="Labels">
                                         <div class="1" tabindex="0">
                                             <h6><strong>Tipos de Etiquetas</strong></h6>
-                                            <select class="form-control" id="TipoEtiqueta" onchange="getDisponibles()">
+                                            <select class="form-control" id="TipoEtiqueta">
                                             </select>
                                         </div>
                                         <br />
-                                        <div class=2" tabindex="0">
-                                            <h6><strong>Etiquetas Disponible</strong></h6>
-                                            <select class="form-control" id="ListaCampos">
+                                        <div class="2" tabindex="0">
+                                            <h6><strong>Etiquetas</strong></h6>
+                                            <select class="form-control" id="ListaEtiquetas">
                                             </select>
                                         </div>
                                         <br />
 
                                         <div class="btn-group-vertical" role="group" aria-label="Gestión Plantillas">
 
-                                            <button type="button" class="btn btn-labeled btn-warning" id="insertaretiqueta" onclick="singleSelectChangeText()">
+                                            <button type="button" class="btn btn-labeled btn-warning" id="insertaretiqueta">
                                                 <span class="btn-label"><i class="fa fa-bookmark"></i></span>Insertar Etiqueta
                                             </button>
 
 
-                                            <button type="button" class="btn btn-labeled btn-success" id="guardar">
+                                            <button type="button" class="btn btn-labeled btn-success" id="guardarPlantilla">
                                                 <span class="btn-label"><i class="fa fa-thumbs-up"></i></span>Guardar Plantilla
                                             </button>
+
 
                                         </div>
 
@@ -309,7 +155,7 @@
                                         </div>
                                         <br />
                                         <div class="ms-CommandButton" hidden="hidden">
-                                            <button class="ms-CommandButton-button" id="combinarretiqueta" onclick="combineText()">
+                                            <button class="ms-CommandButton-button" id="combinarretiqueta">
                                                 <span class="ms-CommandButton-icon ms-fontColor-themePrimary"><i class="ms-Icon ms-Icon--CircleRing"></i></span>
                                                 <span class="ms-CommandButton-label">Combinar Etiqueta</span>
                                             </button>
@@ -334,15 +180,15 @@
                                 <div class="form-group col-md-11">
                                     <p><span style="color:darkslategrey;">Este paso se debe ejecutar cuando ya se va a radicar el documento dentro de Doc4Us</span></p>
                                     <div class="btn-group-vertical" role="group" aria-label="Gestión Plantillas">
-                                        <button type="button" class="btn btn-labeled btn-warning" id="VerPreliminar" onclick="VerPreliminar()">
+                                        <button type="button" class="btn btn-labeled btn-warning" id="VerPreliminar">
                                             <span class="btn-label"><i class="fa fa-eye"></i></span>Ver Preliminar
                                         </button>
 
-                                        <button type="button" class="btn btn-labeled btn-warning" id="VerDocumento" onclick="VerDocumento()">
+                                        <button type="button" class="btn btn-labeled btn-warning" id="VerDocumento">
                                             <span class="btn-label"><i class="fa fa-file-text-o"></i></span>Ver Documento
                                         </button>
 
-                                        <button type="button" class="btn btn-labeled btn-success" id="GuardarDocumento" onclick="GuardarDocumento()">
+                                        <button type="button" class="btn btn-labeled btn-success" id="GuardarDocumento">
                                             <span class="btn-label"><i class="fa fa-thumbs-up"></i></span>Guardar Documento
                                         </button>
                                     </div>
@@ -360,11 +206,40 @@
 
 
         </div>
+
+
+        <div class="padding">
+
+
+            <button class="Button Button--primary" id="highlight-button">
+                <span class="Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+                <span class="Button-label" id="button-text"></span>
+                <span class="Button-description" id="button-desc"></span>
+            </button>
+        </div>
+
+
     </div>
 
+
+    <!-- Component used for displaying notifications -->
+    <div class="MessageBanner" id="notification-popup">
+        <div class="MessageBanner-content">
+            <div class="MessageBanner-text">
+                <div class="MessageBanner-clipper">
+                    <div class="ms-font-m-plus ms-fontWeight-semibold" id="notification-header"></div>
+                    <div class="ms-font-m ms-fontWeight-semilight" id="notification-body"></div>
+                </div>
+            </div>
+            <button class="MessageBanner-expand" style="display: none"><i class="ms-Icon ms-Icon--chevronsDown"></i> </button>
+            <div class="MessageBanner-action"></div>
+        </div>
+        <button class="MessageBanner-close"> <i class="ms-Icon ms-Icon--ChromeClose"></i> </button>
+    </div>
+
+
+
+
     <div id="supportedVersion" style="font-size:10px;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;color:darkgreen" />
-
-
-
 </body>
 </html>

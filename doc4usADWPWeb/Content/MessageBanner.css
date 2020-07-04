@@ -23,19 +23,19 @@
     animation-fill-mode: both;
 }
 
-.MessageBanner .ms-Icon {
-    font-size: 16px;
-}
+    .MessageBanner .ms-Icon {
+        font-size: 16px;
+    }
 
-.MessageBanner.hide {
-    animation-name: ms-fadeOut, ms-slideUpOut20;
-    animation-timing-function: cubic-bezier(0.1, 0.25, 0.75, 0.9);
-    animation-fill-mode: both;
-}
+    .MessageBanner.hide {
+        animation-name: ms-fadeOut, ms-slideUpOut20;
+        animation-timing-function: cubic-bezier(0.1, 0.25, 0.75, 0.9);
+        animation-fill-mode: both;
+    }
 
-.MessageBanner.is-hidden {
-    display: none;
-}
+    .MessageBanner.is-hidden {
+        display: none;
+    }
 
 .MessageBanner-expand,
 .MessageBanner-close {
@@ -46,10 +46,10 @@
     background-color: transparent;
 }
 
-.MessageBanner-expand:focus,
-.MessageBanner-close:focus {
-    outline: 1px solid transparent;
-}
+    .MessageBanner-expand:focus,
+    .MessageBanner-close:focus {
+        outline: 1px solid transparent;
+    }
 
 .MessageBanner-close {
     position: absolute;
@@ -73,9 +73,9 @@
     vertical-align: top;
 }
 
-.MessageBanner-expand.is-visible {
-    display: inline-block;
-}
+    .MessageBanner-expand.is-visible {
+        display: inline-block;
+    }
 
 .MessageBanner-action {
     display: inline-block;
@@ -85,9 +85,9 @@
     padding-right: 36px;
 }
 
-.MessageBanner-action .Button {
-    color: #ffffff;
-}
+    .MessageBanner-action .Button {
+        color: #ffffff;
+    }
 
 .MessageBanner-clipper {
     overflow: hidden;
@@ -101,9 +101,9 @@
     height: auto;
 }
 
-.MessageBanner.is-expanded .MessageBanner-clipper {
-    white-space: normal;
-}
+    .MessageBanner.is-expanded .MessageBanner-clipper {
+        white-space: normal;
+    }
 
 @media screen and (max-width: 479px) {
     .MessageBanner-expand {
@@ -129,7 +129,7 @@
         width: 20px;
     }
 
-    .MessageBanner-expand .ms-Icon {
-        color: #0078d7;
-    }
+        .MessageBanner-expand .ms-Icon {
+            color: #0078d7;
+        }
 }
